@@ -1,49 +1,39 @@
 import cocotb
+from cocotb.clock import Clock
 from cocotb.triggers import Timer, RisingEdge, ClockCycles
 
 
 @cocotb.test()
 async def basic_test(dut):
 
-    # --------------------------
-    # CLOCK MUST BE RUNNING
-    # --------------------------
-    cocotb.start_soon(cocotb.clock.Clock(dut.clk, 10, units="ns").start())
+    # Start clock (10 ns period)
+    cocotb.start_soon(Clock(dut.clk, 10, units="ns").start())
 
-    # --------------------------
-    # APPLY RESET
-    # --------------------------
+    # Reset
     dut.rst_n.value = 0
     dut.ui_in.value = 0
     dut.uio_in.value = 0
 
-    await ClockCycles(dut.clk, 5)     # proper synchronous reset
+    await ClockCycles(dut.clk, 5)
     dut.rst_n.value = 1
 
-    # Wait extra time for gate delays
     await ClockCycles(dut.clk, 10)
-    await Timer(100, units="ns")
 
-    # --------------------------
-    # WRITE VALUE 0x20
-    # --------------------------
+    # Write 0x20
     TEST_VAL = 0x20
 
     dut.ui_in.value = TEST_VAL
-    dut.uio_in.value = 0x01          # WE = 1
+    dut.uio_in.value = 0x01    # write enable
     await RisingEdge(dut.clk)
+    dut.uio_in.value = 0x00
 
-    dut.uio_in.value = 0x00          # WE = 0
-
-    # Wait for GPIO register output to settle
+    # Allow time for gpio_reg to update
     await ClockCycles(dut.clk, 5)
-    await Timer(50, units="ns")
+    await Timer(20, units="ns")
 
-    # --------------------------
-    # SAFE READ (avoids X/Z)
-    # --------------------------
-    got = dut.uo_out.value.integer  # SAFE: automatically resolves X as 0
+    # Read output safely
+    got = dut.uo_out.value.integer
 
-    cocotb.log.info(f"Read value = {got}")
+    cocotb.log.info(f"GPIO Read = {got}")
 
     assert got == TEST_VAL, f"Expected {TEST_VAL}, got {got}"
