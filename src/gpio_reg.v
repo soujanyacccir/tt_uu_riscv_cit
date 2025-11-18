@@ -15,7 +15,7 @@ module gpio_reg (
         if (!rst_n)
             gpio_out <= 8'h00;
         else if (we)
-            gpio_out <= wdata;   // **NO modification**
+            gpio_out <= wdata;   // EXACT store
     end
 
 endmodule
