@@ -10,7 +10,7 @@ project:
   tiles: "1x1"
 
   # IMPORTANT: must start with tt_um_
-  top_module:  "tt_um_soujanya_top"
+  top_module:  "tt_um_riscv_top"
 
   # List of RTL source files (each file must be inside ./src)
   source_files:
