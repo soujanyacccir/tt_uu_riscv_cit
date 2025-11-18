@@ -9,7 +9,7 @@ SRC_DIR = $(PWD)/../src
 
 # List all your source files here
 PROJECT_SOURCES = \
-    tt_um_soujanya_top.v \
+    tt_um_riscv_top.v \
     gpio_reg.v \
     pwm_generator.v \
     counter_to_7seg.v
