@@ -14,10 +14,11 @@ project:
 
   # List of RTL source files (each file must be inside ./src)
   source_files:
-    - "tt_um_soujanya_top.v"
-    - "gpio_reg.v"
-    - "pwm_generator.v"
-    - "counter_to_7seg.v"
+  - tt_um_riscv_top.v
+  - gpio_reg.v
+  - pwm_generator.v
+  - counter_to_7seg.v
+
 
 # The pinout of your project. Used for dataset/website.
 pinout:
