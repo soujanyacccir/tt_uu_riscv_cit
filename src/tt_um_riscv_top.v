@@ -48,14 +48,20 @@ module tt_um_riscv_top(
         .seg (seg7)
     );
 
+       // -----------------------------
+    // OUTPUTS (reset-safe)
     // -----------------------------
-    // OUTPUTS
-    // -----------------------------
-    assign uo_out  = gpio_out;
-    assign uio_out = {pwm_sig, seg7};
-    assign uio_oe  = 8'hFF;
+    // Ensure outputs are driven to known values during reset to avoid X propagation
+    wire [7:0] uo_out_int;
+    wire [7:0] uio_out_int;
 
-    wire _unused = &{ena, clk, rst_n, 1'b0};
+    assign uo_out_int  = gpio_out;
+    assign uio_out_int = {pwm_sig, seg7};
+
+    // drive real pads low during reset to avoid X/Z during gl sim
+    assign uo_out  = (rst_n) ? uo_out_int  : 8'h00;
+    assign uio_out = (rst_n) ? uio_out_int : 8'h00;
+    assign uio_oe  = 8'hFF;   // keep as-is (if you want outputs active during reset)
 
 endmodule
 
