@@ -1,21 +1,21 @@
+`default_nettype none
+
 module gpio_reg (
     input  wire        clk,
     input  wire        rst_n,
     input  wire        we,
     input  wire [7:0]  wdata,
-    output reg  [7:0]  rdata,
+    output wire [7:0]  rdata,
     output reg  [7:0]  gpio_out
 );
+
+    assign rdata = gpio_out;
+
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
+        if (!rst_n)
             gpio_out <= 8'h00;
-            rdata    <= 8'h00;
-        end else begin
-            // writing: update gpio_out on write enable
-            if (we)
-                gpio_out <= wdata;
-            // rdata can mirror gpio_out or be something else
-            rdata <= gpio_out;
-        end
+        else if (we)
+            gpio_out <= wdata;
     end
+
 endmodule
