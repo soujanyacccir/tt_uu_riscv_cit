@@ -15,7 +15,9 @@ module gpio_reg (
         if (!rst_n)
             gpio_out <= 8'h00;
         else if (we)
-            gpio_out <= wdata;
+            gpio_out <= wdata;   // **NO modification**
     end
 
 endmodule
+
+`default_nettype wire
